@@ -1,7 +1,7 @@
 -- Sakila Sample Database Schema
 -- Version 1.0
 
--- Copyright (c) 2006, 2015, Oracle and/or its affiliates.
+-- Copyright (c) 2006, 2015, Oracle and/or its affiliates. 
 -- All rights reserved.
 
 -- Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -166,9 +166,9 @@ CREATE TABLE film_category (
 
 --
 -- Table structure for table `film_text`
---
+-- 
 -- InnoDB added FULLTEXT support in 5.6.10. If you use an
--- earlier version, then consider upgrading (recommended) or
+-- earlier version, then consider upgrading (recommended) or 
 -- changing InnoDB to MyISAM as the film_text engine
 --
 
@@ -184,10 +184,11 @@ CREATE TABLE film_text (
 -- Triggers for loading film_text from film
 --
 
+DELIMITER ;;
 CREATE TRIGGER `ins_film` AFTER INSERT ON `film` FOR EACH ROW BEGIN
     INSERT INTO film_text (film_id, title, description)
         VALUES (new.film_id, new.title, new.description);
-  END;
+  END;;
 
 
 CREATE TRIGGER `upd_film` AFTER UPDATE ON `film` FOR EACH ROW BEGIN
@@ -199,12 +200,14 @@ CREATE TRIGGER `upd_film` AFTER UPDATE ON `film` FOR EACH ROW BEGIN
                 film_id=new.film_id
         WHERE film_id=old.film_id;
     END IF;
-  END;
+  END;;
 
 
 CREATE TRIGGER `del_film` AFTER DELETE ON `film` FOR EACH ROW BEGIN
     DELETE FROM film_text WHERE film_id = old.film_id;
-  END;
+  END;;
+
+DELIMITER ;
 
 --
 -- Table structure for table `inventory`
@@ -443,6 +446,8 @@ GROUP BY a.actor_id, a.first_name, a.last_name;
 -- Procedure structure for procedure `rewards_report`
 --
 
+DELIMITER //
+
 CREATE PROCEDURE rewards_report (
     IN min_monthly_purchases TINYINT UNSIGNED
     , IN min_dollar_amount_purchased DECIMAL(10,2) UNSIGNED
@@ -504,7 +509,11 @@ proc: BEGIN
 
     /* Clean up */
     DROP TABLE tmpCustomer;
-END;
+END //
+
+DELIMITER ;
+
+DELIMITER $$
 
 CREATE FUNCTION get_customer_balance(p_customer_id INT, p_effective_date DATETIME) RETURNS DECIMAL(5,2)
     DETERMINISTIC
@@ -545,7 +554,11 @@ BEGIN
     AND payment.customer_id = p_customer_id;
 
   RETURN v_rentfees + v_overfees - v_payments;
-END;
+END $$
+
+DELIMITER ;
+
+DELIMITER $$
 
 CREATE PROCEDURE film_in_stock(IN p_film_id INT, IN p_store_id INT, OUT p_film_count INT)
 READS SQL DATA
@@ -557,7 +570,11 @@ BEGIN
      AND inventory_in_stock(inventory_id);
 
      SELECT FOUND_ROWS() INTO p_film_count;
-END;
+END $$
+
+DELIMITER ;
+
+DELIMITER $$
 
 CREATE PROCEDURE film_not_in_stock(IN p_film_id INT, IN p_store_id INT, OUT p_film_count INT)
 READS SQL DATA
@@ -569,7 +586,11 @@ BEGIN
      AND NOT inventory_in_stock(inventory_id);
 
      SELECT FOUND_ROWS() INTO p_film_count;
-END;
+END $$
+
+DELIMITER ;
+
+DELIMITER $$
 
 CREATE FUNCTION inventory_held_by_customer(p_inventory_id INT) RETURNS INT
 READS SQL DATA
@@ -583,7 +604,11 @@ BEGIN
   AND inventory_id = p_inventory_id;
 
   RETURN v_customer_id;
-END;
+END $$
+
+DELIMITER ;
+
+DELIMITER $$
 
 CREATE FUNCTION inventory_in_stock(p_inventory_id INT) RETURNS BOOLEAN
 READS SQL DATA
@@ -612,7 +637,9 @@ BEGIN
     ELSE
       RETURN TRUE;
     END IF;
-END;
+END $$
+
+DELIMITER ;
 
 SET SQL_MODE=@OLD_SQL_MODE;
 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
