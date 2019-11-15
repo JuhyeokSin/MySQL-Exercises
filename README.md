@@ -6,19 +6,6 @@ This project consisted of:
 2. Writing SQL to view and query data from the database
 3. Writing SQL to insert, update and delete records in the database
 
-## Getting Started
-
-Clone this repository by running the following command in your terminal:
-
-#### `git clone git@github.com:christiangallego/MySQL-Exercises.git`
-
-Then download the project dependencies by running this command in your terminal:
-
-#### `npm install`
-
-In the project directory, you can run:
-
-#### `npm start`
 
 ## Downloading MySQL
 
